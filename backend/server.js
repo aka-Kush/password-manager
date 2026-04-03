@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import authRoutes from "./src/routes/auth.routes.js";
-import userRoutes from "./src/routes/user.routes.js";
 import protectedRoutes from "./src/routes/protected.routes.js";
 import authMiddleware from "./src/middlewares/auth.js";
 import connectdb from "./src/db/db.js";
@@ -22,7 +21,6 @@ app.use(cookieParser());
 connectdb();
 
 app.use("/", authRoutes);
-app.use("/users", userRoutes);
 app.use("/dashboard", authMiddleware, protectedRoutes);
 
 try {
