@@ -21,11 +21,14 @@ const Dashboard = () => {
     }
 
     const handleDelete = async (id) => {
+        setLoading(true);
         try {
             await api.delete(`/dashboard/delete/${id}`);
             setLoginCards(prevCards => prevCards.filter(card => card._id !== id));
+            setLoading(false);
             toast.success("Login deleted")
         } catch (err) {
+            setLoading(false);
             toast.error("Error while deleting")
         }
     }
