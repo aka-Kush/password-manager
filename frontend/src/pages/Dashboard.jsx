@@ -15,9 +15,7 @@ const Dashboard = () => {
     const justLoggedIn = useAuthStore(state => state.justLoggedIn);
     const setJustLoggedIn = useAuthStore(state => state.setJustLoggedIn);
 
-    const loading = useAuthStore(state => state.loading);
-    const setLoading = useAuthStore(state => state.setLoading);
-
+    const [loading, setLoading] = useState(false);
     const handleEdit = (id, name, username, password) => {
         setEditingCard({ id, name, username, password });
     }
