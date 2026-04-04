@@ -6,10 +6,18 @@ A full-stack MERN password manager with user authentication, encrypted credentia
 
 ---
 
+## 🌐 Live Demo
+
+**[https://shush-password-manager.vercel.app/](https://shush-password-manager.vercel.app/)**
+
+> ⚠️ **Known Issue — Mobile & Most Browsers:** The live demo may not work correctly on mobile browsers or Safari on any device. This is due to third-party cookie restrictions — the frontend (Vercel) and backend (Render) are on different domains, and modern browsers increasingly block cross-site cookies. Authentication may silently fail after login. The app includes a global 401 interceptor that redirects unauthenticated users back to `/login` automatically. A permanent fix using Authorization header-based auth is planned. Desktop Chrome/Firefox currently work as expected.
+
+---
+
 ## ✨ Features
 
 - **Authentication** — Register and login with JWT-based auth stored in session cookies
-- **Protected Routes** — All dashboard routes require a valid session
+- **Protected Routes** — All dashboard routes require a valid session, with automatic redirect on session expiry
 - **Login Card Management** — Create, view, edit, and delete stored login credentials
 - **Password Generator** — Generate passwords with configurable criteria:
   - Custom length
@@ -17,20 +25,22 @@ A full-stack MERN password manager with user authentication, encrypted credentia
   - Lowercase letters
   - Numbers
   - Special characters
-- **Global State** — Managed with Zustand
+- **Global State** — Managed with Zustand (only `user` persisted to localStorage, auth status is always re-validated)
 - **Encrypted Storage** — Passwords stored encrypted in MongoDB
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer     | Technology                          |
-|-----------|-------------------------------------|
-| Frontend  | React (Vite), Zustand               |
-| Backend   | Node.js, Express.js, Nodemon        |
-| Database  | MongoDB, Mongoose                   |
-| Auth      | JWT, Session Cookies                |
-| Encryption| AES (via `ENC_SECRET_KEY`)          |
+| Layer      | Technology                          |
+|------------|-------------------------------------|
+| Frontend   | React (Vite), Zustand               |
+| Backend    | Node.js, Express.js, Nodemon        |
+| Database   | MongoDB, Mongoose                   |
+| Auth       | JWT, Session Cookies                |
+| Encryption | AES (via `ENC_SECRET_KEY`)          |
+| HTTP Client| Axios (with request/response interceptors) |
+| Deployment | Vercel (frontend), Render (backend), MongoDB Atlas |
 
 ---
 
@@ -40,10 +50,13 @@ A full-stack MERN password manager with user authentication, encrypted credentia
 password-manager/
 ├── frontend/                  # React frontend (Vite)
 │   ├── src/
+│   │   ├── api/
+│   │   │   └── axios.js       # Axios instance with interceptors (401 → redirect to /login)
 │   │   ├── components/        # Reusable UI components
 │   │   ├── pages/             # Route-level page components
 │   │   ├── helper/            # Utility/helper functions
 │   │   └── store/             # Zustand global state
+│   ├── vercel.json            # Rewrites all routes to index.html for client-side routing
 │   └── .env
 │
 ├── backend/                   # Express backend
@@ -186,6 +199,9 @@ npm run start
 - Auth is handled via **JWT stored in HTTP-only session cookies**
 - All card routes are **protected** — users can only access their own data
 - Input validation is enforced on both frontend and backend
+- **Global 401 interceptor** — all API calls go through a central Axios instance; any 401 response automatically clears local auth state and redirects to `/login`, protecting all routes without per-page logic
+- **Cache-Control: no-store** set globally on all backend responses to prevent browsers from serving stale authenticated responses to unauthenticated users
+- **Zustand `partialize`** — only the `user` object is persisted to localStorage; `isAuthenticated` is never stored, so auth status is always re-derived from a real backend response on page load
 
 ---
 
