@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
+import api from "../api/axios";
 
 const AuthPage = () => {
     const setUser = useAuthStore(state => state.setUser);
@@ -26,8 +26,7 @@ const AuthPage = () => {
         e.preventDefault();
         if (formData.password.length < 8) return toast.error("Password must be atleast 8 digit long")
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/${isLogin ? "login" : "register"}`;
-            const res = await axios.post(url, formData, { withCredentials: true });
+            const res = await api.post(isLogin ? "/login" : "register/", formData);
             if (res.status == 200) {
                 setUser(res.data);
                 setJustLoggedIn(true);
@@ -61,7 +60,7 @@ const AuthPage = () => {
                     password: "",
                     name: ""
                 })
-            } else toast.error(`Error: ${error.message}`);
+            } else toast.error(`Error: ${err.message}`);
         }
     };
 

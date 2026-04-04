@@ -4,12 +4,13 @@ import AuthPage from './pages/AuthPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import { useEffect } from 'react'
-import axios from 'axios'
 import useAuthStore from './store/authStore'
 import NewLogin from './pages/NewLogin'
 import Generate from './pages/Generate'
 import Navbar from './components/Navbar'
 import { Toaster } from "react-hot-toast";
+import api from './api/axios'
+import toast from 'react-hot-toast'
 
 function App() {
 
@@ -22,7 +23,7 @@ function App() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/dashboard`, { withCredentials: true });
+                const { data } = await api.get("/dashboard");
                 setUser(data.user);
             } catch (err) {
                 logout();
@@ -33,11 +34,18 @@ function App() {
         fetchUser();
     }, [logout, setUser])
 
+    useEffect(() => {
+        let toastId;
+        if (loading) {
+            toastId = toast.loading("Loading...");
+        }
+        return () => toast.dismiss(toastId);
+    }, [loading]);
+
     return (
         <>
             {loading ?
                 <div>
-                    <h1>LOADING!!!!</h1>
                 </div>
                 :
                 <BrowserRouter>

@@ -5,7 +5,6 @@ import {
   fetchLogins,
   addLogin,
   deleteLogin,
-  editLogin,
 } from "../controllers/protected.controller.js";
 
 router.get("/", dashboard);

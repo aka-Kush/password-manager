@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
+import api from "../api/axios";
 
 const NewLogin = ({ id, username, name, password, onCardUpdate }) => {
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ const NewLogin = ({ id, username, name, password, onCardUpdate }) => {
         e.preventDefault();
         if (data.password.length < 8) return toast.error("Password must be atleast 8 digit long")
         try {
-            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/dashboard/login`, data, { withCredentials: true });
+            const res = await api.post("/dashboard/login", data);
             setData({ username: "", name: "", password: "", id: null })
             if (onCardUpdate) onCardUpdate(res.data);
             toast.success("Login saved")

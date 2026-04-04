@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import Logincard from "../components/Logincard"
-import axios from "axios"
 import toast from "react-hot-toast";
 import useAuthStore from "../store/authStore";
 import { HiLockClosed } from "react-icons/hi";
 import NewLogin from "./NewLogin";
+import api from "../api/axios";
 
 const Dashboard = () => {
 
@@ -21,7 +21,7 @@ const Dashboard = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/dashboard/delete/${id}`, { withCredentials: true });
+            await api.delete(`/dashboard/delete/${id}`);
             setLoginCards(prevCards => prevCards.filter(card => card._id !== id));
             toast.success("Login deleted")
         } catch (err) {
@@ -38,7 +38,7 @@ const Dashboard = () => {
 
     const fetchlogincards = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/dashboard/logins`, { withCredentials: true });
+            const { data } = await api.get("/dashboard/logins");
             setLoginCards(data.decryptedCards);
         } catch (err) {
             toast.error(`Error ${err.message}`)
