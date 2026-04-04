@@ -26,7 +26,7 @@ const AuthPage = () => {
         e.preventDefault();
         if (formData.password.length < 8) return toast.error("Password must be atleast 8 digit long")
         try {
-            const res = await api.post(isLogin ? "/login" : "register/", formData);
+            const res = await api.post(isLogin ? "/login" : "/register", formData);
             if (res.status == 200) {
                 setUser(res.data);
                 setJustLoggedIn(true);
